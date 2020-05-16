@@ -25,6 +25,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         bear = Bear(bearAnim)
 
+        sign_in_forgot.setOnClickListener {
+            bear.idle()
+            Toast.makeText(this, "Needed to be implemented", Toast.LENGTH_SHORT).show()
+        }
+
         emailet.setOnFocusChangeListener { _, hasFocus ->
             if(hasFocus){
                 bear.idle()
@@ -74,7 +79,6 @@ class MainActivity : AppCompatActivity() {
 
             //login if fine
             login()
-            bear.success()
         }
 
 
@@ -88,6 +92,12 @@ class MainActivity : AppCompatActivity() {
             if (oldSelection!! >= 0) {
                 passwordet.setSelection(oldSelection)
             }
+            val text = passwordet.text.toString()
+            if(PasswordToggle && text.isNotEmpty()){
+            }
+            else{
+                bear.handsdown()
+            }
             PasswordToggle = PasswordToggle!=true
         }
     }
@@ -99,13 +109,17 @@ class MainActivity : AppCompatActivity() {
         if (!email.isEmpty() && !password.isEmpty()) {
             this.mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener ( this, OnCompleteListener<AuthResult> { task ->
                 if (task.isSuccessful) {
-                    startActivity(Intent(this, MainActivity::class.java))
+                    bear.success()
+                   // startActivity(Intent(this, MainActivity::class.java))
                     Toast.makeText(this, "Successfully Logged in :)", Toast.LENGTH_LONG).show()
+
                 } else {
+                    bear.fail()
                     Toast.makeText(this, "Error Logging in :(", Toast.LENGTH_SHORT).show()
                 }
             })
         }else {
+            bear.fail()
             Toast.makeText(this, "Please fill up the Credentials :|", Toast.LENGTH_SHORT).show()
         }
     }
