@@ -3,4 +3,11 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
+
+    <color name="Red">#9f0000</color>
+    <color name="Unselected">#888888</color>
+    <color name="White">#ffffff</color>
+    <color name="Black">#000000</color>
+
+    <color name="bear_color">#5c8b9f</color>
 </resources>
