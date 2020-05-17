@@ -30,7 +30,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         bear = Bear(bearAnim)
-
+        if (mAuth.currentUser!=null){
+            startActivity(Intent(this, dashboard::class.java))
+        }
         sign_in_forgot.setOnClickListener {
             bear.idle()
             Toast.makeText(this, "Needed to be implemented", Toast.LENGTH_SHORT).show()
@@ -90,7 +92,6 @@ class MainActivity : AppCompatActivity() {
 
         login_btn.setOnClickListener {
             //check whether email and password fields are empty or not
-
             //login if fine
             login()
         }
@@ -118,20 +119,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun login () {
+
         var email = emailet.text.toString()
         var password = passwordet.text.toString()
 
         if (!email.isEmpty() && !password.isEmpty()) {
             this.mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener ( this, OnCompleteListener<AuthResult> { task ->
                 if (task.isSuccessful) {
-
-                        bear.success()
-
-
-
-
-
-                   // startActivity(Intent(this, MainActivity::class.java))
+                    bear.success()
+                    startActivity(Intent(this, dashboard::class.java))
                     Toast.makeText(this, "Successfully Logged in :)", Toast.LENGTH_LONG).show()
 
                 } else {
