@@ -1,6 +1,8 @@
 package com.taxonteam.taxon
 
+import android.content.Context
 import android.content.Intent
+import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -14,6 +16,10 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.taxonteam.taxon.modelClass.Bear
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private var PasswordToggle = false
@@ -47,7 +53,7 @@ class MainActivity : AppCompatActivity() {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                bear.looking_aroung(getTextWidth(emailet) / emailet.width)
+                bear.looking_around(getTextWidth(emailet) / emailet.width)
                 Log.d("ONTEXTCHANGED",getTextWidth(emailet).toString() +  " -> "+emailet.width.toString() +  (getTextWidth(emailet) / emailet.width))
             }
         })
@@ -62,7 +68,7 @@ class MainActivity : AppCompatActivity() {
                 if (!PasswordToggle && (text.isNotEmpty())) {
                     bear.handsup()
                 } else {
-                    bear.looking_aroung(getTextWidth(passwordet) / passwordet.width)
+                    bear.looking_around(getTextWidth(passwordet) / passwordet.width)
                 }
             }
         })
@@ -94,6 +100,7 @@ class MainActivity : AppCompatActivity() {
             }
             val text = passwordet.text.toString()
             if(PasswordToggle && text.isNotEmpty()){
+                bear.handsup()
             }
             else{
                 bear.handsdown()
@@ -109,7 +116,13 @@ class MainActivity : AppCompatActivity() {
         if (!email.isEmpty() && !password.isEmpty()) {
             this.mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener ( this, OnCompleteListener<AuthResult> { task ->
                 if (task.isSuccessful) {
-                    bear.success()
+
+                        bear.success()
+
+
+
+
+
                    // startActivity(Intent(this, MainActivity::class.java))
                     Toast.makeText(this, "Successfully Logged in :)", Toast.LENGTH_LONG).show()
 

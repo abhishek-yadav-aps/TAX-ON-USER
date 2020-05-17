@@ -62,9 +62,9 @@ class Bear(var bearView: LottieAnimationView) {
         currentState = HandsDown
     }
 
-    fun looking_aroung(fl:Float){
+    fun looking_around(fl:Float){
         if(checkCurrentState() != LookingAround){
-            bearView.setMinAndMaxFrame(138, 242)
+           bearView.setMinAndMaxFrame(138, 242)
         }
         bearView.loop(false)
         currentState = LookingAround
