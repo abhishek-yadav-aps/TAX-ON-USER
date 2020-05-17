@@ -93,7 +93,10 @@ class MainActivity : AppCompatActivity() {
         login_btn.setOnClickListener {
             //check whether email and password fields are empty or not
             //login if fine
-            login()
+
+            //  startActivity(Intent(this, dashboard::class.java))
+
+           login()
         }
 
 

@@ -1,19 +1,18 @@
-package com.taxonteam.taxon
+package com.taxonteam.taxon.ui
 
-import android.app.Activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import com.taxonteam.taxon.R
 import kotlinx.android.synthetic.main.activity_dashboard.*
+import kotlinx.android.synthetic.main.content_dashboard.*
+import kotlinx.android.synthetic.main.content_dashboard_two.*
 import kotlinx.android.synthetic.main.fragment_data_recorder.*
 import java.io.File
 
-/**
- * A simple [Fragment] subclass.
- */
 class dataRecorder : Fragment() {
 
     override fun onCreateView(
