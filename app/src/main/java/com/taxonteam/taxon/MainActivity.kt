@@ -53,8 +53,16 @@ class MainActivity : AppCompatActivity() {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                bear.looking_around(getTextWidth(emailet) / emailet.width)
-                Log.d("ONTEXTCHANGED",getTextWidth(emailet).toString() +  " -> "+emailet.width.toString() +  (getTextWidth(emailet) / emailet.width))
+                val text = emailet.text.toString()
+                if (text.isNotEmpty()) {
+                    bear.looking_around(getTextWidth(emailet) / emailet.width)
+                    Log.d(
+                        "ONTEXTCHANGED",
+                        getTextWidth(emailet).toString() + " -> " + emailet.width.toString() + (getTextWidth(
+                            emailet) / emailet.width))
+                } else {
+                    bear.idle()
+                }
             }
         })
 
