@@ -1,9 +1,11 @@
 package com.taxonteam.taxon
 
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.util.Patterns
 import android.view.View
@@ -46,24 +48,6 @@ class dashboard : AppCompatActivity() {
 
         setNavigationDrawer()
 
-        mDialog = Dialog(this)
-        setDialogueBox()
-
-        savebtn.setOnClickListener {
-            GlobalScope.launch(Dispatchers.IO) {
-                name = nameet.text.toString()
-                uid = uidet.text.toString()
-                email = emailuseret.text.toString()
-                phone = phoneet.text.toString()
-                mRef.child("users").child(userid.toString()).child("name").setValue(name)
-                mRef.child("users").child(userid.toString()).child("uid").setValue(uid)
-                mRef.child("users").child(userid.toString()).child("email").setValue(email)
-                mRef.child("users").child(userid.toString()).child("phone").setValue(phone)
-                Log.i("keysearch",name+uid+email+phone);
-            }
-            datasaveview.visibility=View.INVISIBLE
-        }
-
         val searchListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if(dataSnapshot.exists()) {
@@ -73,7 +57,8 @@ class dashboard : AppCompatActivity() {
                 } else {
                     //Key does not exist
                     Log.i("keysearch","writing");
-                    datasaveview.visibility=View.VISIBLE
+                    mDialog = Dialog(this@dashboard)
+                    setDialogueBox()
                     //Log.i("keysearch","writing");
                     //fetchUserData()
                 }
@@ -101,8 +86,12 @@ class dashboard : AppCompatActivity() {
         mDialog.save_btn.setOnClickListener {
             name = mDialog.name.text.toString()
             uid = mDialog.uid.text.toString()
-            email = mDialog.email.toString()
-            phone = mDialog.phone.toString()
+            email = mDialog.email.text.toString()
+            phone = mDialog.phone.text.toString()
+            mRef.child("users").child(userid.toString()).child("name").setValue(name)
+            mRef.child("users").child(userid.toString()).child("uid").setValue(uid)
+            mRef.child("users").child(userid.toString()).child("email").setValue(email)
+            mRef.child("users").child(userid.toString()).child("phone").setValue(phone)
 
             when {
                 name.isEmpty() -> {
@@ -111,14 +100,15 @@ class dashboard : AppCompatActivity() {
                 uid.isEmpty() -> {
                     mDialog.uid.error = "Enter UID."
                 }
-                email.isEmpty() || (!validEmail(email) )-> {
+                !validEmail(email)-> {
                     mDialog.email.error = "Enter valid Email"
                 }
-                phone.isEmpty() || (!validCellPhone(phone)) -> {
+                validCellPhone(phone)  -> {
                     mDialog.phone.error = "Enter valid 10-digit Number"
                 }
                 else -> {
                     mDialog.dismiss()
+
                 }
             }
         }
@@ -144,8 +134,7 @@ class dashboard : AppCompatActivity() {
     private fun setNavigationDrawer() {
           nav_drawer.setNavigationItemSelectedListener {
               when(it.itemId){
-                R.id.menu_profile -> {
-                                        Toast.makeText(this, "Profile clicked", Toast.LENGTH_SHORT).show()
+                R.id.menu_profile -> { Toast.makeText(this, "Profile clicked", Toast.LENGTH_SHORT).show()
                                         return@setNavigationItemSelectedListener true }
                 R.id.menu_setting -> true
                   R.id.menu_out -> true
@@ -160,11 +149,16 @@ class dashboard : AppCompatActivity() {
 
     //Check for valid Email
     private fun validEmail(email: String): Boolean {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
     //Check for Valid Phone Number
     fun validCellPhone(number: String?): Boolean {
-        return Patterns.PHONE.matcher(number).matches()
+        return !TextUtils.isEmpty(number) && android.util.Patterns.PHONE.matcher(number).matches()
+    }
+    fun signOut(){
+        mAuth.signOut()
+        val intent = Intent(this,MainActivity::class.java)
+        startActivity(intent)
     }
 
 }
