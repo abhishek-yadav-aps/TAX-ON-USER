@@ -93,9 +93,6 @@ class MainActivity : AppCompatActivity() {
         login_btn.setOnClickListener {
             //check whether email and password fields are empty or not
             //login if fine
-
-            //  startActivity(Intent(this, dashboard::class.java))
-
            login()
         }
 
@@ -131,6 +128,7 @@ class MainActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     bear.success()
                     startActivity(Intent(this, dashboard::class.java))
+                    finish()
                     Toast.makeText(this, "Successfully Logged in :)", Toast.LENGTH_LONG).show()
 
                 } else {

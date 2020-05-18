@@ -1,11 +1,16 @@
 package com.taxonteam.taxon
 
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
+import android.util.Patterns
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -13,13 +18,17 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.content_dashboard.*
-
+import kotlinx.android.synthetic.main.dialogue_layout.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.regex.Pattern
+
 
 class dashboard : AppCompatActivity() {
+
+    private lateinit var mDialog:Dialog
+
     val mRef=FirebaseDatabase.getInstance().getReference()
     val mAuth=FirebaseAuth.getInstance()
     val userid=mAuth.currentUser?.uid
@@ -35,7 +44,10 @@ class dashboard : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        setNavigationDrawer();
+        setNavigationDrawer()
+
+        mDialog = Dialog(this)
+        setDialogueBox()
 
         savebtn.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {
@@ -58,19 +70,58 @@ class dashboard : AppCompatActivity() {
                     //Key exists
                     Log.i("keysearch","reading");
                     fetchUserData()
-
                 } else {
                     //Key does not exist
                     Log.i("keysearch","writing");
                     datasaveview.visibility=View.VISIBLE
                     //Log.i("keysearch","writing");
                     //fetchUserData()
-
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) { }
         }
         mRef.child("users").orderByKey().equalTo(userid).addValueEventListener(searchListener)
+    }
+
+    private fun setDialogueBox() {
+
+        mDialog.setContentView(R.layout.dialogue_layout)
+        val window = mDialog.window
+        window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        //mDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        mDialog.setCanceledOnTouchOutside(false) // prevent dialog box from getting dismissed on outside touch
+        mDialog.setCancelable(false)  //prevent dialog box from getting dismissed on back key pressed
+        mDialog.show()
+
+        mDialog.close_btn.setOnClickListener {
+            finish()
+        }
+
+        mDialog.save_btn.setOnClickListener {
+            name = mDialog.name.text.toString()
+            uid = mDialog.uid.text.toString()
+            email = mDialog.email.toString()
+            phone = mDialog.phone.toString()
+
+            when {
+                name.isEmpty() -> {
+                    mDialog.name.error = "Enter your name."
+                }
+                uid.isEmpty() -> {
+                    mDialog.uid.error = "Enter UID."
+                }
+                email.isEmpty() || (!validEmail(email) )-> {
+                    mDialog.email.error = "Enter valid Email"
+                }
+                phone.isEmpty() || (!validCellPhone(phone)) -> {
+                    mDialog.phone.error = "Enter valid 10-digit Number"
+                }
+                else -> {
+                    mDialog.dismiss()
+                }
+            }
+        }
     }
 
     private fun fetchUserData() {
@@ -107,5 +158,13 @@ class dashboard : AppCompatActivity() {
         toggle.syncState()
     }
 
+    //Check for valid Email
+    private fun validEmail(email: String): Boolean {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+    //Check for Valid Phone Number
+    fun validCellPhone(number: String?): Boolean {
+        return Patterns.PHONE.matcher(number).matches()
+    }
 
 }
