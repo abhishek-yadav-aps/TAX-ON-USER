@@ -3,18 +3,21 @@ package com.taxonteam.taxon
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.taxonteam.taxon.ui.dataRecorder
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.content_dashboard.*
-import java.io.File
+
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class dashboard : AppCompatActivity() {
     val mRef=FirebaseDatabase.getInstance().getReference()
@@ -34,7 +37,21 @@ class dashboard : AppCompatActivity() {
 
         setNavigationDrawer();
 
-        //mRef.child("users").child(userid.toString()).child("email").setValue("test@gmail.com")
+        savebtn.setOnClickListener {
+            GlobalScope.launch(Dispatchers.IO) {
+                name = nameet.text.toString()
+                uid = uidet.text.toString()
+                email = emailuseret.text.toString()
+                phone = phoneet.text.toString()
+                mRef.child("users").child(userid.toString()).child("name").setValue(name)
+                mRef.child("users").child(userid.toString()).child("uid").setValue(uid)
+                mRef.child("users").child(userid.toString()).child("email").setValue(email)
+                mRef.child("users").child(userid.toString()).child("phone").setValue(phone)
+                Log.i("keysearch",name+uid+email+phone);
+            }
+            datasaveview.visibility=View.INVISIBLE
+        }
+
         val searchListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if(dataSnapshot.exists()) {
@@ -45,17 +62,15 @@ class dashboard : AppCompatActivity() {
                 } else {
                     //Key does not exist
                     Log.i("keysearch","writing");
-                    supportFragmentManager.beginTransaction().add(R.id.datafrag, dataRecorder()
-                    ).commitNow()
-                    fetchUserData()
+                    datasaveview.visibility=View.VISIBLE
+                    //Log.i("keysearch","writing");
+                    //fetchUserData()
 
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) { }
         }
         mRef.child("users").orderByKey().equalTo(userid).addValueEventListener(searchListener)
-
-
     }
 
     private fun fetchUserData() {
@@ -91,7 +106,6 @@ class dashboard : AppCompatActivity() {
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
     }
-
 
 
 }
