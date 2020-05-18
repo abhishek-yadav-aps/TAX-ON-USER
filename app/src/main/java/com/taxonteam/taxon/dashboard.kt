@@ -7,8 +7,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
-import android.util.Patterns
-import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -21,11 +19,7 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.content_dashboard.*
 import kotlinx.android.synthetic.main.dialogue_layout.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import java.util.regex.Pattern
-
+import kotlinx.android.synthetic.main.nav_header.*
 
 class dashboard : AppCompatActivity() {
 
@@ -38,6 +32,7 @@ class dashboard : AppCompatActivity() {
     var uid:String=""
     var email:String=""
     var phone:String=""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
@@ -66,10 +61,16 @@ class dashboard : AppCompatActivity() {
             override fun onCancelled(databaseError: DatabaseError) { }
         }
         mRef.child("users").orderByKey().equalTo(userid).addValueEventListener(searchListener)
+
+          //Edit PROFILE ICON
+//        user_edit.setOnClickListener {
+//           mDialog = Dialog(this@dashboard)
+//            setDialogueBox()
+//        }
+
     }
 
     private fun setDialogueBox() {
-
         mDialog.setContentView(R.layout.dialogue_layout)
         val window = mDialog.window
         window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
@@ -88,10 +89,6 @@ class dashboard : AppCompatActivity() {
             uid = mDialog.uid.text.toString()
             email = mDialog.email.text.toString()
             phone = mDialog.phone.text.toString()
-            mRef.child("users").child(userid.toString()).child("name").setValue(name)
-            mRef.child("users").child(userid.toString()).child("uid").setValue(uid)
-            mRef.child("users").child(userid.toString()).child("email").setValue(email)
-            mRef.child("users").child(userid.toString()).child("phone").setValue(phone)
 
             when {
                 name.isEmpty() -> {
@@ -103,12 +100,19 @@ class dashboard : AppCompatActivity() {
                 !validEmail(email)-> {
                     mDialog.email.error = "Enter valid Email"
                 }
-                validCellPhone(phone)  -> {
+                !validCellPhone(phone)  -> {
                     mDialog.phone.error = "Enter valid 10-digit Number"
                 }
-                else -> {
-                    mDialog.dismiss()
+                else -> { //Save Button
+                    mRef.child("users").child(userid.toString()).child("name").setValue(name)
+                    mRef.child("users").child(userid.toString()).child("uid").setValue(uid)
+                    mRef.child("users").child(userid.toString()).child("email").setValue(email)
+                    mRef.child("users").child(userid.toString()).child("phone").setValue(phone)
 
+                    user_name.text = name
+                    user_email.text = email
+                    user_uid.text = uid
+                    mDialog.dismiss()
                 }
             }
         }
@@ -122,7 +126,10 @@ class dashboard : AppCompatActivity() {
                 email= dataSnapshot.child("email").getValue(String::class.java).toString()
                 phone= dataSnapshot.child("phone").getValue(String::class.java).toString()
                 //Log.i("datafetched",data)
-                Log.i("keysearch",name+uid+email+phone);
+                Log.i("keysearch",name+uid+email+phone)
+                user_name.text = name
+                user_email.text = email
+                user_uid.text = uid
             }
             override fun onCancelled(databaseError: DatabaseError) { }
         }
@@ -137,7 +144,10 @@ class dashboard : AppCompatActivity() {
                 R.id.menu_profile -> { Toast.makeText(this, "Profile clicked", Toast.LENGTH_SHORT).show()
                                         return@setNavigationItemSelectedListener true }
                 R.id.menu_setting -> true
-                  R.id.menu_out -> true
+                  R.id.menu_out -> {
+                      signOut()
+                      true
+                  }
                   else -> { return@setNavigationItemSelectedListener  false}
               }
           }
@@ -159,6 +169,7 @@ class dashboard : AppCompatActivity() {
         mAuth.signOut()
         val intent = Intent(this,MainActivity::class.java)
         startActivity(intent)
+        finish()
     }
 
 }
