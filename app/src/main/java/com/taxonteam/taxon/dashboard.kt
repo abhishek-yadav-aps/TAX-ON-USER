@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.WindowManager
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +21,7 @@ import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.content_dashboard.*
 import kotlinx.android.synthetic.main.dialogue_layout.*
 import kotlinx.android.synthetic.main.nav_header.*
+import kotlinx.android.synthetic.main.nav_header.view.*
 
 class dashboard : AppCompatActivity() {
 
@@ -63,10 +65,12 @@ class dashboard : AppCompatActivity() {
         mRef.child("users").orderByKey().equalTo(userid).addValueEventListener(searchListener)
 
           //Edit PROFILE ICON
-//        user_edit.setOnClickListener {
-//           mDialog = Dialog(this@dashboard)
-//            setDialogueBox()
-//        }
+
+        nav_drawer.getHeaderView(0).user_edit.setOnClickListener {
+            mDialog = Dialog(this@dashboard)
+            setDialogueBox()
+        }
+
 
     }
 
