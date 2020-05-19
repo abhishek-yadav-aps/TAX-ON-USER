@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.content_dashboard.*
+import kotlinx.android.synthetic.main.content_dashboard_two.*
 import kotlinx.android.synthetic.main.dialogue_layout.*
 import kotlinx.android.synthetic.main.nav_header.*
 import kotlinx.android.synthetic.main.nav_header.view.*
@@ -44,6 +45,9 @@ class dashboard : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
         setNavigationDrawer()
+
+        lottieAnimationView2.setMinAndMaxFrame(0,196)
+        lottieAnimationView2.playAnimation()
 
         val searchListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -173,6 +177,11 @@ class dashboard : AppCompatActivity() {
         mAuth.signOut()
         val intent = Intent(this,MainActivity::class.java)
         startActivity(intent)
+        finish()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
         finish()
     }
 
