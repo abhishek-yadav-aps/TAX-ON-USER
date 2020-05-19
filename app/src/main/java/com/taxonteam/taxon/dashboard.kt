@@ -5,10 +5,10 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.Editable
 import android.text.TextUtils
 import android.util.Log
 import android.view.WindowManager
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -35,6 +35,8 @@ class dashboard : AppCompatActivity() {
     var uid:String=""
     var email:String=""
     var phone:String=""
+
+    var PhoneNumberOfUser = "" //This entity has not been used to show in the UI. So this variable is there to keep track of it.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,10 +74,64 @@ class dashboard : AppCompatActivity() {
 
         nav_drawer.getHeaderView(0).user_edit.setOnClickListener {
             mDialog = Dialog(this@dashboard)
-            setDialogueBox()
+            setNavHeaderDialogueBox()
         }
 
 
+    }
+
+    private fun setNavHeaderDialogueBox(){
+        mDialog.setContentView(R.layout.dialogue_layout)
+        val window = mDialog.window
+        window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        mDialog.setCanceledOnTouchOutside(false) // prevent dialog box from getting dismissed on outside touch
+        mDialog.setCancelable(false)  //prevent dialog box from getting dismissed on back key pressed
+        mDialog.show()
+
+        //Setting original Content before hand
+        mDialog.Dname.setText(user_name.text)
+        mDialog.Duid.setText(user_uid.text)
+        mDialog.Demail.setText(user_email.text)
+        mDialog.Dphone.setText(PhoneNumberOfUser)
+
+        mDialog.close_btn.setOnClickListener {
+            mDialog.dismiss()
+        }
+
+        mDialog.save_btn.setOnClickListener {
+            name = mDialog.Dname.text.toString()
+            uid = mDialog.Duid.text.toString()
+            email = mDialog.Demail.text.toString()
+            phone = mDialog.Dphone.text.toString()
+
+            when {
+                name.isEmpty() -> {
+                    mDialog.Dname.error = "Enter your name."
+                }
+                uid.isEmpty() -> {
+                    mDialog.Duid.error = "Enter UID."
+                }
+                !validEmail(email) -> {
+                    mDialog.Demail.error = "Enter valid Email"
+                }
+                !validCellPhone(phone) -> {
+                    mDialog.Dphone.error = "Enter valid 10-digit Number"
+                }
+                else -> { //Save Button
+                    mRef.child("users").child(userid.toString()).child("name").setValue(name)
+                    mRef.child("users").child(userid.toString()).child("uid").setValue(uid)
+                    mRef.child("users").child(userid.toString()).child("email").setValue(email)
+                    mRef.child("users").child(userid.toString()).child("phone").setValue(phone)
+
+                    user_name.text = name
+                    user_email.text = email
+                    user_uid.text = uid
+                    PhoneNumberOfUser = phone
+                    mDialog.dismiss()
+                }
+            }
+        }
     }
 
     private fun setDialogueBox() {
@@ -93,23 +149,23 @@ class dashboard : AppCompatActivity() {
         }
 
         mDialog.save_btn.setOnClickListener {
-            name = mDialog.name.text.toString()
-            uid = mDialog.uid.text.toString()
-            email = mDialog.email.text.toString()
-            phone = mDialog.phone.text.toString()
+            name = mDialog.Dname.text.toString()
+            uid = mDialog.Duid.text.toString()
+            email = mDialog.Demail.text.toString()
+            phone = mDialog.Dphone.text.toString()
 
             when {
                 name.isEmpty() -> {
-                    mDialog.name.error = "Enter your name."
+                    mDialog.Dname.error = "Enter your name."
                 }
                 uid.isEmpty() -> {
-                    mDialog.uid.error = "Enter UID."
+                    mDialog.Duid.error = "Enter UID."
                 }
                 !validEmail(email)-> {
-                    mDialog.email.error = "Enter valid Email"
+                    mDialog.Demail.error = "Enter valid Email"
                 }
                 !validCellPhone(phone)  -> {
-                    mDialog.phone.error = "Enter valid 10-digit Number"
+                    mDialog.Dphone.error = "Enter valid 10-digit Number"
                 }
                 else -> { //Save Button
                     mRef.child("users").child(userid.toString()).child("name").setValue(name)
@@ -120,6 +176,7 @@ class dashboard : AppCompatActivity() {
                     user_name.text = name
                     user_email.text = email
                     user_uid.text = uid
+                    PhoneNumberOfUser = phone
                     mDialog.dismiss()
                 }
             }
@@ -135,9 +192,11 @@ class dashboard : AppCompatActivity() {
                 phone= dataSnapshot.child("phone").getValue(String::class.java).toString()
                 //Log.i("datafetched",data)
                 Log.i("keysearch",name+uid+email+phone)
+
                 user_name.text = name
                 user_email.text = email
                 user_uid.text = uid
+                PhoneNumberOfUser = phone
             }
             override fun onCancelled(databaseError: DatabaseError) { }
         }
@@ -179,10 +238,4 @@ class dashboard : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
-    }
-
 }

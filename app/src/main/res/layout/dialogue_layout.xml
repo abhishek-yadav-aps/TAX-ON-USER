@@ -51,7 +51,7 @@
             android:textColor="@color/cardview_light_background"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="@+id/textView3"
-            app:layout_constraintTop_toBottomOf="@+id/name" />
+            app:layout_constraintTop_toBottomOf="@+id/Dname" />
 
         <TextView
             android:id="@+id/textView5"
@@ -63,7 +63,7 @@
             android:textColorHighlight="@color/cardview_light_background"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="@+id/textView4"
-            app:layout_constraintTop_toBottomOf="@+id/uid" />
+            app:layout_constraintTop_toBottomOf="@+id/Duid" />
 
         <TextView
             android:id="@+id/textView7"
@@ -74,10 +74,10 @@
             android:textColor="@color/cardview_light_background"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="@+id/textView5"
-            app:layout_constraintTop_toBottomOf="@+id/phone" />
+            app:layout_constraintTop_toBottomOf="@+id/Dphone" />
 
         <EditText
-            android:id="@+id/name"
+            android:id="@+id/Dname"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -93,7 +93,7 @@
             app:layout_constraintTop_toTopOf="@+id/textView3" />
 
         <EditText
-            android:id="@+id/uid"
+            android:id="@+id/Duid"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:backgroundTint="#FFFFFF"
@@ -102,12 +102,12 @@
             android:textColor="@color/cardview_light_background"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/textView4"
-            app:layout_constraintEnd_toEndOf="@+id/name"
-            app:layout_constraintStart_toStartOf="@+id/name"
+            app:layout_constraintEnd_toEndOf="@+id/Dname"
+            app:layout_constraintStart_toStartOf="@+id/Dname"
             app:layout_constraintTop_toTopOf="@+id/textView4" />
 
         <EditText
-            android:id="@+id/phone"
+            android:id="@+id/Dphone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -123,7 +123,7 @@
             app:layout_constraintTop_toTopOf="@+id/textView5" />
 
         <EditText
-            android:id="@+id/email"
+            android:id="@+id/Demail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:backgroundTint="#FFFFFF"
@@ -132,8 +132,8 @@
             android:textColor="@color/cardview_light_background"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/textView7"
-            app:layout_constraintEnd_toEndOf="@+id/uid"
-            app:layout_constraintStart_toStartOf="@+id/uid"
+            app:layout_constraintEnd_toEndOf="@+id/Duid"
+            app:layout_constraintStart_toStartOf="@+id/Duid"
             app:layout_constraintTop_toTopOf="@+id/textView7" />
 
         <ImageView
